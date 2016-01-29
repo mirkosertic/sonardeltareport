@@ -17,7 +17,7 @@ public interface Constants {
     String DEFAULT_SUMMARY_FILENAME = "summary.txt";
     String KEY_SUMMARY_FILENAME = "sonardelta.summaryfilename";
 
-    String DEFAULT_SUMMARY = "${(coverage.description)!\"\"} went from ${(coverage.old)!0} to ${(coverage.new)!0} (${(coverage.delta.absolute?string[\"+########0;-########0\"])!0}).\n\n" +
+    String DEFAULT_SUMMARY = "${(coverage.description)!\"\"} went from ${(coverage.old)!0} to ${(coverage.new)!0} (${(coverage.delta.absolute?string[\"+########0.00;-########0.00\"])!0}).\n\n" +
                              "${ncloc.description} went from ${ncloc.old?string[\"########0\"]} to ${ncloc.new?string[\"########0\"]} (${ncloc.delta.absolute?string[\"+########0;-########0\"]}).\n\n\n" +
                              "${blocker_violations.description} went from ${blocker_violations.old} to ${blocker_violations.new} (${blocker_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
                              "${critical_violations.description} went from ${critical_violations.old} to ${critical_violations.new} (${critical_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +

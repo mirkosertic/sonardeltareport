@@ -65,7 +65,7 @@ public class MeasuresPersisterTest {
         try (Reader theReader = new FileReader(new File(theTempDirectory.toFile(), Constants.DEFAULT_SUMMARY_FILENAME))) {
             String theContent = IOUtils.toString(theReader);
 
-            assertEquals("Code-Coverage went from 1 to 2 (+1).\n"
+            assertEquals("Code-Coverage went from 1 to 2 (+1.00).\n"
                     + "\n"
                     + "NCLOG went from 3 to 3 (+0).\n"
                     + "\n"

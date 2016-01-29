@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -76,6 +77,7 @@ public class MeasuresPersister {
 
         Configuration theConfiguration = new Configuration(Configuration.VERSION_2_3_22);
         theConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        theConfiguration.setLocale(Locale.ENGLISH);
 
         File theSummaryFile = new File(theWorkingDirectory, aSettings.getString(Constants.KEY_SUMMARY_FILENAME));
         try (PrintWriter theWriter = new PrintWriter(new FileWriter(theSummaryFile))) {
