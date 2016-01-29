@@ -17,7 +17,6 @@ env:
     - SONARVERSION=4.5.5
     - SONARVERSION=4.5.6
 
-
 python:
   - 2.7
 
@@ -25,7 +24,7 @@ before_install:
   - pip install --user codecov
 
 script:
-  - mvn clean verify -Dsonar.version=$SONARVERSION
+  - mvn clean org.jacoco:jacoco-maven-plugin:0.7.5.201505241946:prepare-agent test install -Dsonar.version=$SONARVERSION
 
 after_success:
   - codecov
