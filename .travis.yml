@@ -24,7 +24,7 @@ before_install:
   - pip install --user codecov
 
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test install -Dsonar.version=$SONARVERSION
+  - export MAVEN_OPTS="-Dsonar.version=$SONARVERSION"
 
 after_success:
   - codecov
