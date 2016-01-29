@@ -21,7 +21,7 @@ before_install:
   - pip install --user codecov
 
 script:
-  - mvn clean verify -Dsonar.version=SONARVERSION
+  - mvn clean verify -Dsonar.version=$SONARVERSION
 
 after_success:
   - codecov
