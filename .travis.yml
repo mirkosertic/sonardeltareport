@@ -1,0 +1,27 @@
+sudo: false
+
+language: java
+
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+
+env:
+  matrix:
+    - SONARVERSION=4.5.1
+    - SONARVERSION=4.5.2
+    - SONARVERSION=4.5.4
+    - SONARVERSION=4.5.5
+    - SONARVERSION=4.5.6
+
+python:
+  - 2.7
+
+before_install:
+  - pip install --user codecov
+
+script:
+  - mvn clean verify -Dsonar.version=SONARVERSION
+
+after_success:
+  - codecov
