@@ -1,4 +1,4 @@
-# Sonar Delta Report Plugion
+# Sonar Delta Report Plugin
 
 A simple SonarQube Reporting Plugin for Pretested Commit Analysis
 
