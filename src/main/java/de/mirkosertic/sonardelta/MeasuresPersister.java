@@ -14,12 +14,8 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class MeasuresPersister {
 
@@ -34,6 +30,8 @@ public class MeasuresPersister {
     private final Map<String, Double> beforeAnalysis;
     private final Map<String, Double> afterAnalysis;
     private final Map<String, String> metricToDescription;
+    private Date analysisStart;
+    private Date lastAnalysis;
 
     MeasuresPersister() {
         beforeAnalysis = new HashMap<>();
@@ -77,7 +75,7 @@ public class MeasuresPersister {
 
         Configuration theConfiguration = new Configuration(Configuration.VERSION_2_3_22);
         theConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        theConfiguration.setLocale(Locale.ENGLISH);
+        theConfiguration.setLocale(new Locale(aSettings.getString(Constants.KEY_LOCALE)));
 
         File theSummaryFile = new File(theWorkingDirectory, aSettings.getString(Constants.KEY_SUMMARY_FILENAME));
         try (PrintWriter theWriter = new PrintWriter(new FileWriter(theSummaryFile))) {
@@ -105,6 +103,13 @@ public class MeasuresPersister {
                 theMetric.put("delta", theDelta);
 
                 theDataToRender.put(theKey, theMetric);
+            }
+
+            if (lastAnalysis != null) {
+                theDataToRender.put("lastAnalysis", lastAnalysis);
+            }
+            if (analysisStart != null) {
+                theDataToRender.put("analysisStart", analysisStart);
             }
 
             StringWriter theStringWriter = new StringWriter();
@@ -142,5 +147,13 @@ public class MeasuresPersister {
         } catch (Exception e) {
             LOGGER.error("Error writing to file", e);
         }
+    }
+
+    public void logAnalysisStart(Date aDate) {
+        analysisStart = aDate;
+    }
+
+    public void logLastAnalysis(Date aDate) {
+        lastAnalysis = aDate;
     }
 }

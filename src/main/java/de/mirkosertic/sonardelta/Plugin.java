@@ -73,6 +73,15 @@ import com.google.common.collect.ImmutableList;
                 project = true,
                 module = true,
                 type = PropertyType.STRING
+        ),
+        @Property(
+                key = Constants.KEY_LOCALE,
+                name = "Locale to use while report generation",
+                defaultValue = Constants.DEFAULT_LOCALE,
+                global = true,
+                project = true,
+                module = true,
+                type = PropertyType.STRING
         )
 }
 )

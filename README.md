@@ -25,6 +25,7 @@ Major issues went from 10 to 2 (-8).
 Minor issues went from 0 to 0 (+0).
 Info issues went from 0 to 0 (+0).
 
+All values are relative to the last official analysis at Jan 1, 1970 1:00:00 AM
 ```
 
 This file can be embedded into other reporting mechanism such as pretested commit scenarios.

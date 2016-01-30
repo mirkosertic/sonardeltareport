@@ -1,9 +1,6 @@
 package de.mirkosertic.sonardelta;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +53,14 @@ public class BeforeAnalysisSensor implements Sensor {
         ResourceQuery theQuery = ResourceQuery.create(aProject.getKey());
         theQuery.setDepth(0);
         Resource theResource = theSonar.find(theQuery);
+
+        persister.logAnalysisStart(new Date());
+
         if (theResource != null) {
 
             LOGGER.info("Data found for project key {}", aProject.getKey());
+
+            persister.logLastAnalysis(theResource.getDate());
 
             Set<String> theMetricsKey = new HashSet<>();
 

@@ -1,6 +1,5 @@
 package de.mirkosertic.sonardelta;
 
-import java.io.File;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,21 +40,25 @@ public class AfterAnalysisPostJob implements PostJob {
     }
 
     public void executeOn(Project aProject, SensorContext aSensorContext) {
-        LOGGER.info("Collecting metrics after analysis");
+        if (aProject.isRoot()) {
+            LOGGER.info("Collecting metrics after analysis");
 
-        for (Measure theMeasure : aSensorContext.getMeasures(new GetAllFilter())) {
+            for (Measure theMeasure : aSensorContext.getMeasures(new GetAllFilter())) {
 
-            String theKey = theMeasure.getMetricKey();
+                String theKey = theMeasure.getMetricKey();
 
-            persister.registerMetricKeyWithDescription(theKey, theMeasure.getMetric().getDescription());
+                persister.registerMetricKeyWithDescription(theKey, theMeasure.getMetric().getDescription());
 
-            LOGGER.debug("Got new data for metric {}", theKey);
+                LOGGER.debug("Got new data for metric {}", theKey);
 
-            Double theValue = theMeasure.getValue();
+                Double theValue = theMeasure.getValue();
 
-            persister.logAfterAnalysis(theKey, theValue);
+                persister.logAfterAnalysis(theKey, theValue);
+            }
+
+            persister.writeReportsTo(fileSystem, settings);
+        } else {
+            LOGGER.info("Skipping report for " + aProject);
         }
-
-        persister.writeReportsTo(fileSystem, settings);
     }
 }
