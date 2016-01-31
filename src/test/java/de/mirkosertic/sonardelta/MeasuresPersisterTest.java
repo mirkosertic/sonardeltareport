@@ -74,11 +74,11 @@ public class MeasuresPersisterTest {
                     + "\n"
                     + "NCLOG went from 3 to 3 (+0).\n"
                     + "\n"
-                    + "Blocker went from 5 to 6 (+1).\n"
-                    + "Critical went from 7 to 8 (+1).\n"
-                    + "Major went from 9 to 10 (+1).\n"
-                    + "Minor went from 11 to 12 (+1).\n"
-                    + "Info went from 14 to 13 (-1).\n\n"
+                    + "* Blocker went from 5 to 6 (+1).\n"
+                    + "* Critical went from 7 to 8 (+1).\n"
+                    + "* Major went from 9 to 10 (+1).\n"
+                    + "* Minor went from 11 to 12 (+1).\n"
+                    + "* Info went from 14 to 13 (-1).\n\n"
                     + "All values are relative to the last official analysis at Jan 1, 1970 1:00:00 AM", theContent);
         }
     }

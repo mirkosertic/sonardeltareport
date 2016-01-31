@@ -19,11 +19,11 @@ public interface Constants {
 
     String DEFAULT_SUMMARY = "${(coverage.description)!\"\"} went from ${(coverage.old)!0} to ${(coverage.new)!0} (${(coverage.delta.absolute?string[\"+########0.00;-########0.00\"])!0}).\n\n" +
                              "${ncloc.description} went from ${ncloc.old?string[\"########0\"]} to ${ncloc.new?string[\"########0\"]} (${ncloc.delta.absolute?string[\"+########0;-########0\"]}).\n\n" +
-                             "${blocker_violations.description} went from ${blocker_violations.old} to ${blocker_violations.new} (${blocker_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
-                             "${critical_violations.description} went from ${critical_violations.old} to ${critical_violations.new} (${critical_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
-                             "${major_violations.description} went from ${major_violations.old} to ${major_violations.new} (${major_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
-                             "${minor_violations.description} went from ${minor_violations.old} to ${minor_violations.new} (${minor_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
-                             "${info_violations.description} went from ${info_violations.old} to ${info_violations.new} (${info_violations.delta.absolute?string[\"+########0;-########0\"]}).\n\n" +
+                             "* ${blocker_violations.description} went from ${blocker_violations.old} to ${blocker_violations.new} (${blocker_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
+                             "* ${critical_violations.description} went from ${critical_violations.old} to ${critical_violations.new} (${critical_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
+                             "* ${major_violations.description} went from ${major_violations.old} to ${major_violations.new} (${major_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
+                             "* ${minor_violations.description} went from ${minor_violations.old} to ${minor_violations.new} (${minor_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
+                             "* ${info_violations.description} went from ${info_violations.old} to ${info_violations.new} (${info_violations.delta.absolute?string[\"+########0;-########0\"]}).\n\n" +
                              "All values are relative to the last official analysis at ${lastAnalysis?datetime}";
     String KEY_SUMMARY = "sonardelta.summary";
 
