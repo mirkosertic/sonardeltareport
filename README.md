@@ -2,7 +2,7 @@
 
 A simple SonarQube Reporting Plugin for Pretested Commit Analysis
 
-[![Build Status](https://travis-ci.org/mirkosertic/sonardeltareport.svg?branch=master)](https://travis-ci.org/mirkosertic/sonardeltareport) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.mirkosertic.mavensonarsputnik/sputnik/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.mirkosertic.sonardelta/sonar-delta-plugin/badge.svg)
+[![Build Status](https://travis-ci.org/mirkosertic/sonardeltareport.svg?branch=master)](https://travis-ci.org/mirkosertic/sonardeltareport) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.mirkosertic.sonardelta/sonar-delta-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.mirkosertic.sonardelta/sonar-delta-plugin/badge.svg)
 
 ## System Requirements
 
