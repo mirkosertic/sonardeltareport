@@ -27,32 +27,44 @@ public class MeasuresPersister {
         return PERSISTER;
     }
 
-    private final Map<String, Double> beforeAnalysis;
-    private final Map<String, Double> afterAnalysis;
-    private final Map<String, String> metricToDescription;
+    public interface ValueExtractor {
+        Object getFrom(MetricInformation aInformation);
+    }
+
+    private class MetricInformation {
+
+        private String description;
+        private Double beforeAnalysis;
+        private Double afterAnalysis;
+    }
+
+    private final Map<String, MetricInformation> metricInformation;
     private Date analysisStart;
     private Date lastAnalysis;
 
     MeasuresPersister() {
-        beforeAnalysis = new HashMap<>();
-        afterAnalysis = new HashMap<>();
-        metricToDescription = new HashMap<>();
+        metricInformation = new HashMap<>();
     }
 
-    public void registerMetricKeyWithDescription(String aKey, String aDescription) {
-        metricToDescription.put(aKey, aDescription);
+    private MetricInformation getOrCreateFor(String aKey) {
+        MetricInformation theResult = metricInformation.get(aKey);
+        if (theResult == null) {
+            theResult = new MetricInformation();
+            metricInformation.put(aKey, theResult);
+        }
+        return theResult;
+    }
+
+    public void registerMetricKeyWithDescription(String aMetricKey, String aDescription) {
+        getOrCreateFor(aMetricKey).description = aDescription;
     }
 
     public void logBeforeAnalysis(String aMetricKey, Double aValue) {
-        if (aValue != null) {
-            beforeAnalysis.put(aMetricKey, aValue);
-        }
+        getOrCreateFor(aMetricKey).beforeAnalysis = aValue;
     }
 
     public void logAfterAnalysis(String aMetricKey, Double aValue) {
-        if (aValue != null) {
-            afterAnalysis.put(aMetricKey, aValue);
-        }
+        getOrCreateFor(aMetricKey).afterAnalysis = aValue;
     }
 
     public void writeReportsTo(FileSystem aFileSystem, Settings aSettings) {
@@ -61,15 +73,30 @@ public class MeasuresPersister {
 
         File theBeforeReportFile = new File(theWorkingDirectory, aSettings.getString(Constants.KEY_BEFORE_ANALYSIS_REPORT_FILENAME));
         LOGGER.info("Writing before analysis metrics to {}", theBeforeReportFile);
-        writeMapTo(theBeforeReportFile, beforeAnalysis);
+        writeMapTo(theBeforeReportFile, new ValueExtractor() {
+            @Override
+            public Object getFrom(MetricInformation aInformation) {
+                return aInformation.beforeAnalysis;
+            }
+        }, "");
 
         File theAfterReportFile = new File(theWorkingDirectory, aSettings.getString(Constants.KEY_AFTER_ANALYSIS_REPORT_FILENAME));
         LOGGER.info("Writing after analysis metrics to {}", theAfterReportFile);
-        writeMapTo(theAfterReportFile, afterAnalysis);
+        writeMapTo(theAfterReportFile, new ValueExtractor() {
+            @Override
+            public Object getFrom(MetricInformation aInformation) {
+                return aInformation.afterAnalysis;
+            }
+        }, "");
 
         File theDescriptionsFile = new File(theWorkingDirectory, aSettings.getString(Constants.KEY_METRICS_DESCRIPTOR_FILENAME));
         LOGGER.info("Writing metrics descriptions to {}", theDescriptionsFile);
-        writeMapTo(theDescriptionsFile, metricToDescription);
+        writeMapTo(theDescriptionsFile, new ValueExtractor() {
+            @Override
+            public Object getFrom(MetricInformation aInformation) {
+                return aInformation.description;
+            }
+        }, "");
 
         String theReportTemplate = aSettings.getString(Constants.KEY_SUMMARY);
 
@@ -84,25 +111,23 @@ public class MeasuresPersister {
                     theConfiguration);
 
             Map<String, Object> theDataToRender = new HashMap<>();
-            Set<String> theMetricKeys = new HashSet<>();
-            theMetricKeys.addAll(metricToDescription.keySet());
-            theMetricKeys.addAll(beforeAnalysis.keySet());
-            theMetricKeys.addAll(afterAnalysis.keySet());
-            for (String theKey : theMetricKeys) {
+            for (Entry<String, MetricInformation> theEntry : metricInformation.entrySet()) {
 
-                double theOld = toDefaultIfNull(beforeAnalysis.get(theKey), 0d);
-                double theNew = toDefaultIfNull(afterAnalysis.get(theKey), 0d);
+                MetricInformation theInformation = theEntry.getValue();
+
+                double theOld = toDefaultIfNull(theInformation.beforeAnalysis, 0d);
+                double theNew = toDefaultIfNull(theInformation.afterAnalysis, 0d);
 
                 Map<String, Object> theDelta = new HashMap<>();
                 theDelta.put("absolute", theNew - theOld);
 
                 Map<String, Object> theMetric = new HashMap<>();
-                theMetric.put("description", toDefaultIfNull(metricToDescription.get(theKey), ""));
+                theMetric.put("description", toDefaultIfNull(theInformation.description, ""));
                 theMetric.put("old", theOld);
                 theMetric.put("new", theNew);
                 theMetric.put("delta", theDelta);
 
-                theDataToRender.put(theKey, theMetric);
+                theDataToRender.put(theEntry.getKey(), theMetric);
             }
 
             if (lastAnalysis != null) {
@@ -137,12 +162,18 @@ public class MeasuresPersister {
         return aValue;
     }
 
-    private <T> void writeMapTo(File aFile, Map<String, T> aValues) {
+    private void writeMapTo(File aFile, ValueExtractor aExtractor, String aPrefix) {
         try (PrintWriter theWriter = new PrintWriter(new FileWriter(aFile))) {
-            for (Entry<String, T> theEntry : aValues.entrySet()) {
+            for (Entry<String, MetricInformation> theEntry : metricInformation.entrySet()) {
+                theWriter.print(aPrefix);
                 theWriter.print(theEntry.getKey());
                 theWriter.print("=");
-                theWriter.println(theEntry.getValue());
+                Object theValue = aExtractor.getFrom(theEntry.getValue());
+                if (theValue != null) {
+                    theWriter.println(theValue);
+                } else {
+                    theWriter.println();
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Error writing to file", e);

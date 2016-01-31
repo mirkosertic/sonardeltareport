@@ -24,7 +24,7 @@ public interface Constants {
                              "${major_violations.description} went from ${major_violations.old} to ${major_violations.new} (${major_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
                              "${minor_violations.description} went from ${minor_violations.old} to ${minor_violations.new} (${minor_violations.delta.absolute?string[\"+########0;-########0\"]}).\n" +
                              "${info_violations.description} went from ${info_violations.old} to ${info_violations.new} (${info_violations.delta.absolute?string[\"+########0;-########0\"]}).\n\n" +
-                             "All values are relative to the last official analysis at ${lastAnalysis!\"unknown\"}";
+                             "All values are relative to the last official analysis at ${lastAnalysis?datetime}";
     String KEY_SUMMARY = "sonardelta.summary";
 
     String KEY_LOCALE = "sonardelta.locale";

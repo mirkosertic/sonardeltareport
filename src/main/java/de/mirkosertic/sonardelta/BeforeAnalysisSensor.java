@@ -37,54 +37,59 @@ public class BeforeAnalysisSensor implements Sensor {
     @Override
     public void analyse(Project aProject, SensorContext aSensorContext) {
 
-        LOGGER.info("Collecting metrics before analysis");
+        if (aProject.isRoot()) {
+            LOGGER.info("Collecting metrics before analysis");
 
-        String theSonarHostUrl = settings.getString(Constants.SONAR_HOST_URL);
-        if (theSonarHostUrl.endsWith("/")) {
-            theSonarHostUrl = theSonarHostUrl.substring(0, theSonarHostUrl.length() - 1);
-        }
-        String theUsername = settings.getString(Constants.SONAR_USERNAME) ;
-        String thePassword = settings.getString(Constants.SONAR_PASSWORD);
-
-        LOGGER.info("Connecting to {} with username = {}", theSonarHostUrl, theUsername);
-
-        Sonar theSonar = Sonar.create(theSonarHostUrl, theUsername, thePassword);
-
-        ResourceQuery theQuery = ResourceQuery.create(aProject.getKey());
-        theQuery.setDepth(0);
-        Resource theResource = theSonar.find(theQuery);
-
-        persister.logAnalysisStart(new Date());
-
-        if (theResource != null) {
-
-            LOGGER.info("Data found for project key {}", aProject.getKey());
-
-            persister.logLastAnalysis(theResource.getDate());
-
-            Set<String> theMetricsKey = new HashSet<>();
-
-            Map<String, String> theMetricsToDescription = new HashMap<>();
-
-            MetricQuery theCollectMetricKeysQuery = MetricQuery.all();
-            for (Metric theMetric : theSonar.findAll(theCollectMetricKeysQuery)) {
-                theMetricsToDescription.put(theMetric.getKey(), theMetric.getDescription());
-                theMetricsKey.add(theMetric.getKey());
+            String theSonarHostUrl = settings.getString(Constants.SONAR_HOST_URL);
+            if (theSonarHostUrl.endsWith("/")) {
+                theSonarHostUrl = theSonarHostUrl.substring(0, theSonarHostUrl.length() - 1);
             }
+            String theUsername = settings.getString(Constants.SONAR_USERNAME);
+            String thePassword = settings.getString(Constants.SONAR_PASSWORD);
 
-            ResourceQuery theMetricsQuery = ResourceQuery.createForMetrics(aProject.getKey(), theMetricsKey.toArray(new String[theMetricsKey.size()]));
-            Resource theMetrics = theSonar.find(theMetricsQuery);
-            for (Measure theMeasure : theMetrics.getMeasures()) {
+            LOGGER.info("Connecting to {} with username = {}", theSonarHostUrl, theUsername);
 
-                String theMetricKey = theMeasure.getMetricKey();
+            Sonar theSonar = Sonar.create(theSonarHostUrl, theUsername, thePassword);
 
-                persister.registerMetricKeyWithDescription(theMetricKey, theMetricsToDescription.get(theMetricKey));
+            ResourceQuery theQuery = ResourceQuery.create(aProject.getKey());
+            theQuery.setDepth(0);
+            Resource theResource = theSonar.find(theQuery);
 
-                LOGGER.debug("Found historic data for metric {}", theMetricKey);
+            persister.logAnalysisStart(new Date());
 
-                Double theValue = theMeasure.getValue();
-                persister.logBeforeAnalysis(theMetricKey, theValue);
+            if (theResource != null) {
+
+                LOGGER.info("Data found for project key {}", aProject.getKey());
+
+                persister.logLastAnalysis(theResource.getDate());
+
+                Set<String> theMetricsKey = new HashSet<>();
+
+                Map<String, String> theMetricsToDescription = new HashMap<>();
+
+                MetricQuery theCollectMetricKeysQuery = MetricQuery.all();
+                for (Metric theMetric : theSonar.findAll(theCollectMetricKeysQuery)) {
+                    theMetricsToDescription.put(theMetric.getKey(), theMetric.getDescription());
+                    theMetricsKey.add(theMetric.getKey());
+                }
+
+                ResourceQuery theMetricsQuery = ResourceQuery
+                        .createForMetrics(aProject.getKey(), theMetricsKey.toArray(new String[theMetricsKey.size()]));
+                Resource theMetrics = theSonar.find(theMetricsQuery);
+                for (Measure theMeasure : theMetrics.getMeasures()) {
+
+                    String theMetricKey = theMeasure.getMetricKey();
+
+                    persister.registerMetricKeyWithDescription(theMetricKey, theMetricsToDescription.get(theMetricKey));
+
+                    LOGGER.debug("Found historic data for metric {}", theMetricKey);
+
+                    Double theValue = theMeasure.getValue();
+                    persister.logBeforeAnalysis(theMetricKey, theValue);
+                }
             }
+        } else {
+            LOGGER.info("Skipping {} as it is not the root", aProject);
         }
     }
 
