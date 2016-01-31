@@ -4,7 +4,7 @@
 
     <groupId>de.mirkosertic.sonardelta</groupId>
     <artifactId>sonar-delta-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>sonar-plugin</packaging>
 
     <description>A simple SonarQube Plugin to export measures before and after an analysis run</description>
