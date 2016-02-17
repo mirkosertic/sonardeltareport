@@ -1,5 +1,6 @@
 package de.mirkosertic.sonardelta;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -86,6 +87,9 @@ public class BeforeAnalysisSensor implements Sensor {
                 Double theValue = theMeasure.getValue();
                 persister.logBeforeAnalysis(theMetricKey, theValue);
             }
+        } else {
+            // We need a last Analysis Date in any case. This happens during the first analyis of a project.
+            persister.logLastAnalysis(new Timestamp(System.currentTimeMillis()));
         }
     }
 
