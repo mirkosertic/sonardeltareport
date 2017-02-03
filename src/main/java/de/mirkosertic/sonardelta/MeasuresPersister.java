@@ -1,21 +1,24 @@
 package de.mirkosertic.sonardelta;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.config.Settings;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.*;
-import java.util.Map.Entry;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
 
 public class MeasuresPersister {
 
@@ -140,7 +143,8 @@ public class MeasuresPersister {
             StringWriter theStringWriter = new StringWriter();
             theTemplate.process(theDataToRender, theStringWriter);
 
-            String theReport = theStringWriter.toString();
+            // We want unix file endings here...
+            String theReport = theStringWriter.toString().replaceAll("\r\n", "\n");
 
             LOGGER.info("============= Summary ===============");
             LOGGER.info(theReport);
