@@ -10,7 +10,7 @@
     <description>A simple SonarQube Plugin to export measures before and after an analysis run</description>
     <name>Sonar Delta Export Plugin</name>
 
-    <url>https://github.com/mirkosertic/sonardeltaexport</url>
+    <url>https://github.com/mirkosertic/sonardeltareport</url>
 
     <licenses>
         <license>
